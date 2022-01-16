@@ -23,6 +23,7 @@ Dependencies used for this project are:
 # How to Run
 
 If the correct dependencies are installed, use the following steps to run the application:
+- Pull the code from this repo.
 - Make sure ```C:/uploads/``` exists, this location is currently used as file storage. (If you want to change this edit file.upload-dir in application.properties and rebuild the spring boot app) 
 - Navigate to the target folder using your terminal
 - Run the following command: ```java -jar .\Coding_Challenge-0.0.1-SNAPSHOT.jar```
