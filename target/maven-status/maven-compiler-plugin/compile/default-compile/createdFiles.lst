@@ -1,0 +1,9 @@
+com\example\Coding_Challenge\CodingChallengeApplication.class
+com\example\Coding_Challenge\Repositories\DocumentRepository.class
+com\example\Coding_Challenge\Repositories\UserRepository.class
+com\example\Coding_Challenge\Controllers\DocumentController.class
+com\example\Coding_Challenge\Objects\Document.class
+com\example\Coding_Challenge\Services\DocumentService.class
+com\example\Coding_Challenge\Objects\User.class
+com\example\Coding_Challenge\Services\UserService.class
+com\example\Coding_Challenge\Controllers\UserController.class
