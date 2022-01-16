@@ -3,6 +3,7 @@ package com.example.Coding_Challenge.Controllers;
 import com.example.Coding_Challenge.Services.DocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +37,11 @@ public class DocumentController {
      */
     @PostMapping("/{user_name}")
     public ResponseEntity createDocument(@PathVariable(value = "user_name") String user_name, MultipartFile file, String type) {
-        return documentService.createDocument(user_name, file, type);
+        try {
+            return documentService.createDocument(user_name, file, type);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Can not find file!!"));
+        }
     }
 
     /**

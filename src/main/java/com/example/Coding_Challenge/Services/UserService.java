@@ -47,8 +47,14 @@ public class UserService {
         if (userRepository.findUserByUser_name(user.getUser_name()) != null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("User already exists!!"));
         } else {
-            userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            System.out.println(user);
+            if (user.getUser_name() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Invalid body!"));
+            } else {
+                userRepository.save(user);
+                return new ResponseEntity<>(HttpStatus.CREATED);
+            }
+
         }
 
     }

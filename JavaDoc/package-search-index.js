@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.example.Coding_Challenge"},{"l":"com.example.Coding_Challenge.Controllers"},{"l":"com.example.Coding_Challenge.Objects"},{"l":"com.example.Coding_Challenge.Repositories"},{"l":"com.example.Coding_Challenge.Services"}];updateSearchResults();

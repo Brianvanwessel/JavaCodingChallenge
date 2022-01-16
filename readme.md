@@ -22,7 +22,8 @@ Dependencies used for this project are:
 
 # How to Run
 
-If the correct dependencies are installed, use the following steps to run the application:
+If the correct dependencies are installed, use the following steps to run the application:\
+- Make sure C:/uploads/ exists, this location is currently used as file storage. (If you want to change this edit file.upload-dir in application.properties and rebuild the spring boot app) 
 - Navigate to the target folder using your terminal
 - Run the following command: ```java -jar .\Coding_Challenge-0.0.1-SNAPSHOT.jar```
 
@@ -31,7 +32,8 @@ If the correct dependencies are installed, use the following steps to run the ap
 Due to time restrictions some improvements are still needed for this project:
 
 - Exception handling. Add custom exceptions
-
+- Concurrency. At this moment, Documents are not shared which means that the same Documents can not be changed at the same time. However, no security is implemented so multiple people can use the same User and change the same resource which will result in a concurrency problem. This can be fixed by adding security to a User like adding passwords.
+- File storage location, I don't think this is the most ideal solution. I did not have time to find a better one.
 # API Communication protocols
 
 ---

@@ -61,7 +61,9 @@ public class DocumentService {
         }
 
         User selectedUser = userRepository.findUserByUser_name(user_name);
-
+        if (selectedUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseEntity.badRequest().body("This User does not exist"));
+        }
         if (documentRepository.findDocumentByUser_idAndName(selectedUser.getUser_id(), parts[0]).size() > 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Document already exists for this user!!"));
         } else {
@@ -85,7 +87,7 @@ public class DocumentService {
             queryUser = userRepository.findUserByUser_name(user_name);
             documentByUser = documentRepository.findDocumentByUser_id(queryUser.getUser_id());
         } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("User does not exist!"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseEntity.badRequest().body("User does not exist!"));
         }
         return new ResponseEntity<>(documentByUser, HttpStatus.OK);
 
@@ -102,7 +104,8 @@ public class DocumentService {
      * @throws IOException
      */
     public ResponseEntity<Object> fileUpload(MultipartFile file) throws IOException {
-        String destinationFilename = "./" + uploadDir + file.getOriginalFilename();
+        String destinationFilename = uploadDir + file.getOriginalFilename();
+        System.out.println();
         try {
             Files.copy(file.getInputStream(), Path.of(destinationFilename), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
@@ -118,14 +121,21 @@ public class DocumentService {
      * @param document_name A string that contains a Document name.
      * @return A ResponseEntity that indicates if the Document was downloaded correctly.
      */
-    public ResponseEntity<Resource> downloadDocument(String user_name, String document_name) {
-        User currentUser = userRepository.findUserByUser_name(user_name);
-        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
+    public ResponseEntity downloadDocument(String user_name, String document_name) {
+        User currentUser;
+        List<Document> selectedDocument;
+        try {
+            currentUser = userRepository.findUserByUser_name(user_name);
+            selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
+
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseEntity.badRequest().body("This user does not exist!!"));
+        }
         ResponseEntity<Resource> resource;
         try {
             resource = fileDownload(selectedDocument.get(0).getDocument_name() + "." + selectedDocument.get(0).getDocument_extension());
         } catch (IndexOutOfBoundsException e) {
-            throw new IndexOutOfBoundsException();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseEntity.badRequest().body("This file does not exist!!"));
         }
         return resource;
     }
@@ -167,19 +177,26 @@ public class DocumentService {
      * @return A ResponseEntity that describes if the Document was updated correctly.
      */
     public ResponseEntity updateDocument(String user_name, String document_name, String type) {
-        User currentUser = userRepository.findUserByUser_name(user_name);
-        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
+        User currentUser;
+        List<Document> selectedDocument;
         try {
-            if (type != null) {
+            currentUser = userRepository.findUserByUser_name(user_name);
+            selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
+
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseEntity.badRequest().body("This user does not exist!!"));
+        }
+        try {
+            if (type == null || type.equals("null")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("You can not use null as an property value"));
+            } else {
                 selectedDocument.get(0).setDocument_type(type);
                 documentRepository.save(selectedDocument.get(0));
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("You can not use null as an property value"));
             }
 
 
         } catch (IndexOutOfBoundsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Could not change this property, check if the user and or property is correct!"));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Could not change this property, check if the user / Document and or property are correct!"));
         }
         return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
     }
