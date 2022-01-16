@@ -31,7 +31,7 @@ If the correct dependencies are installed, use the following steps to run the ap
 
 Due to time restrictions some improvements are still needed for this project:
 
-- Exception handling. Add custom exceptions
+- Exception handling. Add custom exceptions.
 - Concurrency. At this moment, Documents are not shared which means that the same Documents can not be changed at the same time. However, no security is implemented so multiple people can use the same User and change the same resource which will result in a concurrency problem. This can be fixed by adding security to a User like adding passwords.
 - File storage location, I don't think this is the most ideal solution. I did not have time to find a better one.
 # API Communication protocols
