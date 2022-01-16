@@ -12,6 +12,10 @@ A basic visual overview of the different components of the API.
 
 [Design](/images/CodeChallenge.drawio.png)
 
+A visual overview of the Database design.
+
+[Database_Design](/images/DatabaseDesign.PNG)
+
 # Dependencies
 
 Dependencies used for this project are:
