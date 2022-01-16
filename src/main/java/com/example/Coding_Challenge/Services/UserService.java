@@ -1,4 +1,5 @@
 package com.example.Coding_Challenge.Services;
+
 import com.example.Coding_Challenge.Objects.User;
 import com.example.Coding_Challenge.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UserService {
     /**
      * The function createUser adds a user to the database
      *
-     * @param user An User object that has to be added to the database.
+     * @param user A User object that has to be added to the database.
      * @return ResponseEntity that indicates if the user was saved correct or not.
      */
     public ResponseEntity createUser(User user) {

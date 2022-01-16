@@ -1,4 +1,5 @@
 package com.example.Coding_Challenge.Services;
+
 import com.example.Coding_Challenge.Objects.Document;
 import com.example.Coding_Challenge.Objects.User;
 import com.example.Coding_Challenge.Repositories.DocumentRepository;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,8 +34,9 @@ public class DocumentService {
 
     /**
      * Constructor that initiates the DocumentService and UserService.
+     *
      * @param documentRepository Instance of the DocumentService
-     * @param userRepository Instance of the UserService
+     * @param userRepository     Instance of the UserService
      */
     @Autowired
     public DocumentService(DocumentRepository documentRepository, UserRepository userRepository) {
@@ -43,16 +46,17 @@ public class DocumentService {
 
     /**
      * The function createDocument uploads a file and creates a Document in the database.
+     *
      * @param user_name A String that contains a user_name.
-     * @param file A MultipartFile that contains the file that will be saved.
-     * @param type A string that contains the Document type.
+     * @param file      A MultipartFile that contains the file that will be saved.
+     * @param type      A string that contains the Document type.
      * @return A ResponseEntity that indicates if the Document was uploaded and saved correctly.
      */
-    public ResponseEntity createDocument(String user_name,MultipartFile file,String type) {
+    public ResponseEntity createDocument(String user_name, MultipartFile file, String type) {
         String[] parts = file.getOriginalFilename().split("\\.");
         try {
-           fileUpload(file);
-        }catch (IOException e){
+            fileUpload(file);
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Can not read file!!"));
         }
 
@@ -61,7 +65,7 @@ public class DocumentService {
         if (documentRepository.findDocumentByUser_idAndName(selectedUser.getUser_id(), parts[0]).size() > 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Document already exists for this user!!"));
         } else {
-            Document document = new Document(parts[1],parts[0],type,selectedUser.getUser_id());
+            Document document = new Document(parts[1], parts[0], type, selectedUser.getUser_id());
             documentRepository.save(document);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
@@ -70,6 +74,7 @@ public class DocumentService {
 
     /**
      * The function getDocumentsForUser collects all documents for a certain user.
+     *
      * @param user_name A string that contains a username.
      * @returnA ResponseEntity that either serves the documents for a certain user or a response that indicates the request failed.
      */
@@ -86,22 +91,21 @@ public class DocumentService {
 
     }
 
-    @Value( "${file.upload-dir}" )
+    @Value("${file.upload-dir}")
     private String uploadDir;
 
     /**
      * The function fileUpload uploads a file to the server.
-     * @param file  A MultipartFile that contains the file that will be saved.
+     *
+     * @param file A MultipartFile that contains the file that will be saved.
      * @return A ResponseEntity that indicates if the file was saved correctly.
      * @throws IOException
      */
     public ResponseEntity<Object> fileUpload(MultipartFile file) throws IOException {
-
-        System.out.println(uploadDir);
         String destinationFilename = "./" + uploadDir + file.getOriginalFilename();
-        try{
+        try {
             Files.copy(file.getInputStream(), Path.of(destinationFilename), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e){
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("File was not uploaded correctly!"));
         }
         return new ResponseEntity<Object>(HttpStatus.CREATED);
@@ -109,17 +113,18 @@ public class DocumentService {
 
     /**
      * The function downloadDocument Downloads a saved Document.
-     * @param user_name A string that contains a username.
+     *
+     * @param user_name     A string that contains a users name.
      * @param document_name A string that contains a Document name.
      * @return A ResponseEntity that indicates if the Document was downloaded correctly.
      */
-    public ResponseEntity<Resource> downloadDocument(String user_name, String document_name){
+    public ResponseEntity<Resource> downloadDocument(String user_name, String document_name) {
         User currentUser = userRepository.findUserByUser_name(user_name);
-        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(),document_name);
+        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
         ResponseEntity<Resource> resource;
-        try{
-            resource = fileDownload(selectedDocument.get(0).getDocument_name() +"." + selectedDocument.get(0).getDocument_extension());
-        } catch (IndexOutOfBoundsException e){
+        try {
+            resource = fileDownload(selectedDocument.get(0).getDocument_name() + "." + selectedDocument.get(0).getDocument_extension());
+        } catch (IndexOutOfBoundsException e) {
             throw new IndexOutOfBoundsException();
         }
         return resource;
@@ -127,18 +132,16 @@ public class DocumentService {
 
     /**
      * The function fileDownload downloads a file from the server.
+     *
      * @param filename A String containing a file name.
      * @return A ResponseEntity that downloads a file.
      */
-    public ResponseEntity<Resource> fileDownload(String filename){
+    public ResponseEntity<Resource> fileDownload(String filename) {
 
         File file = new File(uploadDir + filename);
 
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" +filename);
-//        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
-//        header.add("Pragma", "no-cache");
-//        header.add("Expires", "0");
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
         Path path = Paths.get(file.getAbsolutePath());
 
         ByteArrayResource resource = null;
@@ -157,26 +160,27 @@ public class DocumentService {
 
     /**
      * The function updateDocument updates Document info.
-     * @param user_name A String that contains a username.
+     *
+     * @param user_name     A String that contains a users name.
      * @param document_name A String that contains a Document name.
-     * @param type A String that contains the Document type.
+     * @param type          A String that contains the Document type.
      * @return A ResponseEntity that describes if the Document was updated correctly.
      */
-    public ResponseEntity updateDocument(String user_name, String document_name, String type){
+    public ResponseEntity updateDocument(String user_name, String document_name, String type) {
         User currentUser = userRepository.findUserByUser_name(user_name);
-        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(),document_name);
+        List<Document> selectedDocument = documentRepository.findDocumentByUser_idAndName(currentUser.getUser_id(), document_name);
         try {
-            if (type!=null){
+            if (type != null) {
                 selectedDocument.get(0).setDocument_type(type);
                 documentRepository.save(selectedDocument.get(0));
-            } else{
+            } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("You can not use null as an property value"));
             }
 
 
-        } catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseEntity.badRequest().body("Could not change this property, check if the user and or property is correct!"));
         }
-        return new ResponseEntity<Object>( HttpStatus.NO_CONTENT);
+        return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
     }
 }

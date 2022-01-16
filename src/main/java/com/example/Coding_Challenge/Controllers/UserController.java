@@ -1,4 +1,5 @@
 package com.example.Coding_Challenge.Controllers;
+
 import com.example.Coding_Challenge.Objects.User;
 import com.example.Coding_Challenge.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class UserController {
     /**
      * The function getUsers is a Get mapping that calls the getUsers function from the userService.
      *
-     * @return
+     * @return List of User Objects.
      */
     @GetMapping
     public List<User> getUsers() {

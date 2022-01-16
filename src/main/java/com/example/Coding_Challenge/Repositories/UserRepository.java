@@ -1,4 +1,5 @@
 package com.example.Coding_Challenge.Repositories;
+
 import com.example.Coding_Challenge.Objects.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,7 @@ public interface UserRepository
         extends JpaRepository<User, Integer> {
     /**
      * The function findUserByUser_name collects a User based on its user_name from the User database table.
+     *
      * @param user_name A String containing the name of a User.
      * @return A User Object.
      */
