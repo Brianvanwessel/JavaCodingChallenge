@@ -1,4 +1,4 @@
-#Java Coding Challenge API Documentation
+# Java Coding Challenge API Documentation
 
 
 This is my take on the Java Coding challenge for Dynamic Web Marketing.
@@ -6,13 +6,13 @@ This is my take on the Java Coding challenge for Dynamic Web Marketing.
 This application is a simple microservice running on the JVM that manages storage and retrieval
 of documents for users.
 
-#Design
+# Design
 
 A basic visual overview of the different components of the API.
 
 [Design](/images/CodeChallenge.drawio.png)
 
-#Dependencies
+# Dependencies
 
 Dependencies used for thsi project are:
 
@@ -20,7 +20,7 @@ Dependencies used for thsi project are:
 - Java 17.0.1
 - Spring initializr was used to generate project.
 
-#How to Run
+# How to Run
 
 If the correct dependencies are installed, use the following steps to run the application:
 - Navigate to the target folder using your terminal
